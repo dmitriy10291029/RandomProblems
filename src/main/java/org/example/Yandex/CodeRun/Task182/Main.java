@@ -1,63 +1,49 @@
 package org.example.Yandex.CodeRun.Task182;
-
-import java.io.BufferedReader;
-import java.io.BufferedWriter;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.io.OutputStreamWriter;
+import java.io.*;
+import java.util.*;
 
 public class Main {
-    public static long getDifficult(long a, long b) {
-        long answer = 1;
-
-        if (a == b) {
-            return 1L;
-        }
-        if (a == 1 || b == 1) {
-            return 2L;
-        }
-        if (b % a != 0) {
-            return 0L;
-        }
-        long k = b / a;
-        long nPrimeDivisors = 0;
-
-        long divisor = 2;
-        long maxDivisor = Math.round(Math.sqrt(k)) + 1;
-
-        while (k > 1 && divisor <= maxDivisor) {
-            if (k % divisor == 0) { // находим делитель
-                nPrimeDivisors++;
-                do { // удаляем его из числа полностью
-                    k /= divisor;
-                } while (k > 1 && k % divisor == 0);
-            }
-            divisor++;
-        }
-
-        if (nPrimeDivisors == 0) {
-            return 2;
-
-        } else {
-            do {
-                answer *= 2;
-                nPrimeDivisors--;
-            } while (nPrimeDivisors != 0);
-
-            return answer;
-        }
-    }
-
     public static void main(String[] args) throws IOException {
         BufferedReader reader = new BufferedReader(new InputStreamReader(System.in));
         BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(System.out));
-        String[] parts = reader.readLine().split(" ");
-        long a = Long.parseLong(parts[0]);
-        long b = Long.parseLong(parts[1]);
-        writer.write(String.valueOf(getDifficult(a, b)));
+
+        String[] input = reader.readLine().split(" ");
+        long x = Long.parseLong(input[0]);
+        long y = Long.parseLong(input[1]);
+
+        if (y % x != 0) {
+            writer.write("0\n");
+            reader.close();
+            writer.close();
+            return;
+        }
+
+        long z = y / x;
+        int count = 0;
+
+        for (long a = 1; a * a <= z; a++) {
+            if (z % a == 0) {
+                long b = z / a;
+                if (gcd(a, b) == 1) {
+                    count++;
+                    if (a != b) {
+                        count++;
+                    }
+                }
+            }
+        }
+
+        writer.write(count + "\n");
         reader.close();
         writer.close();
     }
 
+    private static long gcd(long a, long b) {
+        while (b != 0) {
+            long temp = b;
+            b = a % b;
+            a = temp;
+        }
+        return a;
+    }
 }
-
